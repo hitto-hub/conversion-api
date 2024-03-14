@@ -8,25 +8,28 @@ app = Flask(__name__)
 def convert(fr, value, prefix):
     if prefix:
         if fr == 2:
-            data = {'2': '0b' + value, '10': int(value, 2), '16': hex(int(value, 2))}
+            data = {'2': '0b' + value, '10': str(int(value, 2)), '16': hex(int(value, 2))}
         elif fr == 10:
-            data = {'2': bin(int(value)), '10': value, '16': hex(int(value))}
+            data = {'2': bin(int(value)), '10': str(value), '16': hex(int(value))}
         elif fr == 16:
-            data = {'2': bin(int(value, 16)), '10': int(value, 16), '16': '0x' + value}
+            data = {'2': bin(int(value, 16)), '10': str(int(value, 16)), '16': '0x' + value}
     else:
         if fr == 2:
-            data = {'2': value, '10': int(value, 2), '16': hex(int(value, 2))[2:]}
+            data = {'2': value, '10': str(int(value, 2)), '16': hex(int(value, 2))[2:]}
         elif fr == 10:
-            data = {'2': bin(int(value))[2:], '10': value, '16': hex(int(value))[2:]}
+            data = {'2': bin(int(value))[2:], '10': str(value), '16': hex(int(value))[2:]}
         elif fr == 16:
-            data = {'2': bin(int(value, 16))[2:], '10': int(value, 16), '16': value}
+            data = {'2': bin(int(value, 16))[2:], '10': str(int(value, 16)), '16': value}
     return json.dumps(data)
 
-def error_handler_400(message, hint = None):
+def error_handler_400(message, hint = None,):
     return {
         "status": False,
-        "message": message,
-        "hint": hint
+        "message": {
+            "message" : message,
+            "hint": hint
+            },
+        "data": {}
     }, 400
 
 # get
@@ -56,6 +59,14 @@ def get():
 
     # 'value' パラメータは文字列のまま扱う
     value = request.args.get('value')
+    # valueにprefixがある場合切り取り、fromを変更
+    if value is not None and value[:2] == '0b':
+        fr = 2
+        value = value[2:]
+    elif value is not None and value[:2] == '0x':
+        fr = 16
+        value = value[2:]
+    
     if value is None:
         return error_handler_400('missing arguments', 'value parameter is required')
     # if fr == 2 value should be 0 or 1
@@ -78,9 +89,18 @@ def get():
     
     data = convert(fr, value, prefix)
     if to is None:
-        return data
+        return {
+            "status": True,
+            "data": json.loads(data),
+            "message": "success"
+            }, 200
     else:
-        return json.dumps({str(to): json.loads(data)[str(to)]})
+        return {
+            "status": True,
+            "data":{str(to): json.loads(data)[str(to)]},
+            "message": "success"
+            }, 200
+        
     
 if __name__ == '__main__':
     app.run()
