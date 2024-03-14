@@ -8,18 +8,18 @@ app = Flask(__name__)
 def convert(fr, value, prefix):
     if prefix:
         if fr == 2:
-            data = {'2': '0b' + value, '10': str(int(value, 2)), '16': hex(int(value, 2))}
+            data = {'2': '0b' + str(int(value)), '10': str(int(value, 2)), '16': hex(int(value, 2))}
         elif fr == 10:
-            data = {'2': bin(int(value)), '10': str(value), '16': hex(int(value))}
+            data = {'2': bin(int(value)), '10': str(int(value)), '16': hex(int(value))}
         elif fr == 16:
-            data = {'2': bin(int(value, 16)), '10': str(int(value, 16)), '16': '0x' + value}
+            data = {'2': bin(int(value, 16)), '10': str(int(value, 16)), '16': '0x' + str(int(value))}
     else:
         if fr == 2:
-            data = {'2': value, '10': str(int(value, 2)), '16': hex(int(value, 2))[2:]}
+            data = {'2': str(int(value)), '10': str(int(value, 2)), '16': hex(int(value, 2))[2:]}
         elif fr == 10:
-            data = {'2': bin(int(value))[2:], '10': str(value), '16': hex(int(value))[2:]}
+            data = {'2': bin(int(value))[2:], '10': str(int(value)), '16': hex(int(value))[2:]}
         elif fr == 16:
-            data = {'2': bin(int(value, 16))[2:], '10': str(int(value, 16)), '16': value}
+            data = {'2': bin(int(value, 16))[2:], '10': str(int(value, 16)), '16': str(int(value))}
     return json.dumps(data)
 
 def error_handler_400(message, hint = None,):
