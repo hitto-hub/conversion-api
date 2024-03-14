@@ -18,19 +18,23 @@ This API allows for the conversion of numerical values between binary (base 2), 
 
 - `from` (optional): The base of the input number. Can be `2` (binary), `10` (decimal), or `16` (hexadecimal). Defaults to `10` if not specified.
 - `to` (optional): The base to convert the input number to. Can be `2` (binary), `10` (decimal), or `16` (hexadecimal). If not specified, the API returns the number in all three bases.
-`value` (required): The number to be converted. Can include `0b` or `0x` prefix to indicate binary or hexadecimal, respectively. This prefix overrides the `from` parameter.
-`prefix` (optional): Specify `true` to include prefixes (`0b` for binary, `0x` for hexadecimal) in the response. Default is `false`.
+- `value` (required): The number to be converted. Can include `0b` or `0x` prefix to indicate binary or hexadecimal, respectively. This prefix overrides the `from` parameter.
+- `prefix` (optional): Specify `true` to include prefixes (`0b` for binary, `0x` for hexadecimal) in the response. Default is `false`.
 
 ### Successful Response
 
 `status`: `True`
+
 `data`: An object containing the conversion results. The keys are the bases (`2`, `10`, `16`) and the values are the converted numbers in the respective bases.
+
 `message`: "success"
 
 ### Error Response
 
 `status`: `False`
+
 `message`: An object containing an error `message` and a `hint`about how to correct the input.
+
 `data`: An empty object.
 
 ## Examples
